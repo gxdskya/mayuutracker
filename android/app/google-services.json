@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "163953059351",
+    "project_id": "csia-7a78e",
+    "storage_bucket": "csia-7a78e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163953059351:android:3d730f23a94e3ed7935e52",
+        "android_client_info": {
+          "package_name": "gracexiong.csia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163953059351-s1gko8ekn1418fe5jhb3kje87bons9b0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1D-4ESFht2PzCE1MoWbD3M6N_jGftilc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163953059351-s1gko8ekn1418fe5jhb3kje87bons9b0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

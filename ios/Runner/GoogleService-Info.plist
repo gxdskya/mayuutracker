@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>163953059351-0od396kr7kcucrv0j0fqr6ga6mk7h77p.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.163953059351-0od396kr7kcucrv0j0fqr6ga6mk7h77p</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAfbzbImBBf0XlgYCUzBcjjiTMJgNnXzHo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>163953059351</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>gracexiong.csia</string>
+	<key>PROJECT_ID</key>
+	<string>csia-7a78e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>csia-7a78e.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:163953059351:ios:c748b6c7bd007505935e52</string>
+</dict>
+</plist>
