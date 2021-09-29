@@ -301,7 +301,7 @@ class _EntryBoxState extends State<EntryBox> {
                     //code to add the entire array and display calories separately
                     try{
                       _firestore.collection(collectionName).add({'user': loggedInUser.email.toString(), 'name': widget.foodName.toString(), 'calories': calories.toString(), 'nutrientList': uploadDataNutrients, 'timestamp': timestamp.toString()});
-                      print('ok');
+                      print('ok');//i don't know this looks right???
 
                     }catch(e){
                       print('go to');
