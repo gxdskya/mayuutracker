@@ -22,6 +22,7 @@ class LoginHome extends StatelessWidget {
           TextButton(onPressed: (){
             Navigator.pushNamed(context, Settings.id);
 
+
           }, child: Text('Go to settings'))
         ],
       ),

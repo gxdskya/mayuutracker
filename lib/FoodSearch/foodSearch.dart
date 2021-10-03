@@ -295,7 +295,7 @@ class _EntryBoxState extends State<EntryBox> {
                     DateTime timestamp = new DateTime.now();
 
                     String collectionName = loggedInUser.email+'sEntries'+timestamp.toString();
-                    print('ok');
+                    print(collectionName);
 
 
                     //code to add the entire array and display calories separately
