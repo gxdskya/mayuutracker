@@ -272,15 +272,49 @@ class _EntryBoxState extends State<EntryBox> {
             ),
           ),
           TextButton(
-              onPressed: () async{
+              onPressed: () async {
+                if (errorMessage == "") {
+                  List<foodDetails.Flavonoid> actualNutrients = [];
+                  double scaleFactor = numberOfGrams / 100;
+                  double calories = scaleFactor *
+                      widget.flavanoidList[0].amount;
+                  widget.flavanoidList.removeAt(0);
+                  List<Map> uploadDataNutrients = [];
+                  print("ok");
+                  for (foodDetails.Flavonoid flavanoid in widget
+                      .flavanoidList) {
+                    flavanoid.amount = flavanoid.amount * scaleFactor;
+                    Map newMap = {flavanoid.amount: flavanoid.unit};
+                    Map newMap2 = {flavanoid.name: newMap};
+                    uploadDataNutrients.add(newMap2);
+                  }
+                  print("ok");
+                  DateTime timestamp = new DateTime.now();
+                  String collectionName = loggedInUser.email + 'sEntries' +
+                      timestamp.toString();
+                  print('ok');
+                  //code to add the entire array and display calories separately
+                  try {
+                    _firestore.collection(collectionName).add({
+                      'user': loggedInUser.email.toString(),
+                      'name': widget.foodName.toString(),
+                      'calories': calories.toString(),
+                      'nutrientList': uploadDataNutrients,
+                      'timestamp': timestamp.toString()
+                    });
+                    print('ok');
+                  } catch (e) {
+                    print('go to');
+                  }
+                }
+              },
 
 
+        //code to add the entire array and display calories separately
 
-                    //code to add the entire array and display calories separately
-                  },
-
-              child: Text('ADD')),
-        ],
+              child: Text('ADD'),
+              ),
+      ],
       ),
     );
   }
