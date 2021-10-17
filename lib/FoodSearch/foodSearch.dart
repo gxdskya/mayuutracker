@@ -9,9 +9,13 @@ import 'package:csia/ScrollingNavigation.dart';
 import 'package:csia/FoodSearch/classes/FoodItem.dart' as foodDetails;
 import 'package:csia/FoodSearch/FoodInstantEndpoint.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 import 'Food.dart' as food;
 import 'classes/FoodItem.dart';
+
+List caloriesDayList = [];
+double totalCalories = 0;
 
 
 //persistent storage
@@ -21,12 +25,18 @@ FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 User loggedInUser;
-
+String timestamp = DateFormat("yyyy-MM-dd").format(DateTime.now());
+String collectionName = loggedInUser.email + 'sEntries' + DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
 
 class FoodSearchHome extends StatelessWidget {
   static String id = 'FoodSearchHome';
+
+
+
   @override
+
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(child: Icon(Icons.add),onPressed: (){
@@ -34,7 +44,9 @@ class FoodSearchHome extends StatelessWidget {
       },),
       body: Column(
         children: [
-          ConsumedFoodDisplay(),
+
+          StreamBuilder(),
+
 
 
         ],
@@ -44,21 +56,97 @@ class FoodSearchHome extends StatelessWidget {
   }
 }
 
-class ConsumedFoodDisplay extends StatefulWidget {
+
+
+class Streambuilder extends StatefulWidget {
+
+
   @override
-  _ConsumedFoodDisplayState createState() => _ConsumedFoodDisplayState();
+  State<Streambuilder> createState() => _StreambuilderState();
 }
 
-class _ConsumedFoodDisplayState extends State<ConsumedFoodDisplay> {
+class _StreambuilderState extends State<Streambuilder> {
   @override
-  void initState(){
-    super.initState();
-
-  }
   Widget build(BuildContext context) {
-    return Container();
+    return Column(
+      children: [StreamBuilder<QuerySnapshot>(
+          stream: _firestore.collection(collectionName).snapshots(),
+          builder: (context, snapshot){
+            if(!snapshot.hasData){
+              return CircularProgressIndicator();
+            }
+            else{
+              caloriesDayList = [];
+              totalCalories = 0;
+              List<Widget> foodItemList = [];
+              List<Widget> newItems = [];
+              final messages = snapshot.data.docs;
+
+              for (var message in messages) {
+                Map<String, dynamic> data = message.data();
+
+                String calories = data['calories'];
+                String name = data['name'];
+                List nutrients = data['nutrientList'];
+                foodItemList.add(FoodItemWidget(calories, name, nutrients));
+
+              }
+              for (double calorie in caloriesDayList){
+                totalCalories = totalCalories + calorie;
+              }
+              return Expanded(child: ListView(
+                children: foodItemList,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),),
+              );
+            }
+            /*if (snapshot.hasData ==true){
+        return Center(child: CircularProgressIndicator(),);
+        }
+        else{
+
+
+
+
+        }*/
+          }
+      ),
+
+    ]
+    );
   }
 }
+
+class FoodItemWidget extends StatelessWidget {
+  final String calories;
+  final String name;
+  final List listOfMicros;
+
+  FoodItemWidget(this.calories, this.name, this.listOfMicros);
+
+  @override
+  Widget build(BuildContext context) {
+    double calories2 = double.parse(calories);
+    caloriesDayList.add(calories2);
+    return TextButton(
+      onPressed: (){
+
+      },
+      child: SizedBox(
+        height: 60,
+        child: Row(
+          children: [
+            Text(name),
+            Text(calories),
+
+        ],
+      ),
+      ),
+    );
+  }
+}
+
+
+
 
 
 
@@ -97,9 +185,11 @@ class _SearchStatefulState extends State<SearchStateful> {
                       controller: _myController,
                       obscureText: false,
                       onSubmitted: (value) async {
+                        foodList = [CircularProgressIndicator()];
+
                         print(value);
                         searchTerm = value;
-                        foodList = [CircularProgressIndicator()];
+
                         InstantEndpoint instantEndpoint = await networking
                             .getRawData(searchTerm);
                         foodList = [];
@@ -108,18 +198,18 @@ class _SearchStatefulState extends State<SearchStateful> {
                             .results) { //make instant endpoint
                           Widget foodResult = TextButton(
 
-                            onPressed: () async {
+                            onPressed: () async {//method to get the actual food
                               print(result.id);
                               FoodItem selectedFood = await networking.getFoodData(result.id.toInt());
                               List<foodDetails.Flavonoid> listOfNutrients = selectedFood.nutrition.nutrients;
                               print(listOfNutrients.toString());
                               double foodAmount = selectedFood.nutrition.weightPerServing.amount;
-                              foodDetails.Unit unit = selectedFood.nutrition.weightPerServing.unit;
+                              foodDetails.Unit unit = selectedFood.nutrition.weightPerServing.unit;//scales it to 100g nutrient values
                               double scaleFactor = 100/foodAmount;
                               print(listOfNutrients.toString());
                               List<Widget> nutrientWidgetList = [];
                               for (foodDetails.Flavonoid flavonoid in listOfNutrients){
-                                print(flavonoid.name);
+                                print(flavonoid.name);//just to check the validity of data
                                 print(flavonoid.amount);
                                 print(flavonoid.unit);
                                 double actualQuantity = (flavonoid.amount)*scaleFactor;
@@ -226,7 +316,10 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
         floatingActionButton: FloatingActionButton(onPressed: (){
           Navigator.pop(context);
-        },),
+
+        },
+            child: Text('Done?'),
+        ),
       ),
     );
   }
@@ -284,12 +377,14 @@ class _EntryBoxState extends State<EntryBox> {
                   for (foodDetails.Flavonoid flavanoid in widget
                       .flavanoidList) {
                     flavanoid.amount = flavanoid.amount * scaleFactor;
-                    Map newMap = {flavanoid.amount: flavanoid.unit};
+                    Map newMap = {flavanoid.amount.toString(): flavanoid.unit.toString()};
+                    print(flavanoid.unit.toString());
                     Map newMap2 = {flavanoid.name: newMap};
                     uploadDataNutrients.add(newMap2);
                   }
                   print("ok");
-                  DateTime timestamp = new DateTime.now();
+                  DateTime timestamp1 = new DateTime.now();
+                  String timestamp = DateFormat("yyyy-MM-dd").format(timestamp1);
                   String collectionName = loggedInUser.email + 'sEntries' +
                       timestamp.toString();
                   print('ok');
@@ -303,10 +398,12 @@ class _EntryBoxState extends State<EntryBox> {
                       'timestamp': timestamp.toString()
                     });
                     print('ok');
+
                   } catch (e) {
                     print('go to');
                   }
                 }
+
               },
 
 

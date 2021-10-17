@@ -202,6 +202,12 @@ class Flavonoid {
     "amount": amount,
     "unit": unitValues.reverse[unit],
   };
+
+  @override
+  String toString() {
+    return 'Flavonoid{name: $name, title: $title, amount: $amount, unit: $unit}';
+  }
+
 }
 
 enum Unit { MG, EMPTY, G, KCAL, UNIT_G, IU }
@@ -213,6 +219,7 @@ final unitValues = EnumValues({
   "kcal": Unit.KCAL,
   "mg": Unit.MG,
   "g": Unit.UNIT_G
+
 });
 
 class WeightPerServing {
