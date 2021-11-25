@@ -60,6 +60,8 @@ class Steambuilder2 extends StatefulWidget {
 
 class _Steambuilder2State extends State<Steambuilder2> {
   List<Widget> widList = [];
+  String name;
+  String calories;
   @override
   Widget build(BuildContext context) {
 
@@ -78,11 +80,11 @@ class _Steambuilder2State extends State<Steambuilder2> {
                 for (var food in foods){
                   Map map = food.data();
                   List<dynamic> flavanoids = map['nutrientList'];
-                  String name = map['name'];
+                  name = map['name'];
 
-                  String calories = map['calories'];
-                  print(food.data.toString());
+                  calories = map['calories'];
                   print(map['name']);
+                  print(map['calories']);
                   widList.add(ButtonFood(height:100, child: Row(children: [Text(calories), Text(name)]), mapVar: flavanoids));
                 }
               return ListView(children: widList);
@@ -108,7 +110,7 @@ class ButtonFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
-
+      child: child,
     );
   }
 }
