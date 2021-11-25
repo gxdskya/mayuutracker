@@ -18,15 +18,19 @@ List caloriesDayList = [];
 double totalCalories = 0;
 
 
+
+
 //persistent storage
 Networking networking = Networking();
 
 FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-User loggedInUser;
+User loggedInUser = _auth.currentUser;
 String timestamp = DateFormat("yyyy-MM-dd").format(DateTime.now());
 String collectionName = loggedInUser.email + 'sEntries' + DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
+Stream _stream = _firestore.collection(collectionName).snapshots();
+
 
 class FoodSearchHome extends StatelessWidget {
   static String id = 'FoodSearchHome';
@@ -42,17 +46,71 @@ class FoodSearchHome extends StatelessWidget {
       floatingActionButton: FloatingActionButton(child: Icon(Icons.add),onPressed: (){
         Navigator.pushNamed(context, SearchStateful.id);
       },),
-      body: Column(
-        children: [
+      body:Steambuilder2(),
 
-          StreamBuilder(),
-
-
-
-        ],
-      ),
     );
 
+  }
+}
+
+class Steambuilder2 extends StatefulWidget {
+  @override
+  _Steambuilder2State createState() => _Steambuilder2State();
+}
+
+class _Steambuilder2State extends State<Steambuilder2> {
+  List<Widget> widList = [];
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(
+      child: StreamBuilder(
+        stream: _firestore.collection(collectionName).snapshots(),
+          builder: (context, snapshots) {
+            if(!snapshots.hasData){
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            else {
+
+              final foods = snapshots.data.docs;
+                for (var food in foods){
+                  Map map = food.data();
+                  List<dynamic> flavanoids = map['nutrientList'];
+                  String name = map['name'];
+
+                  String calories = map['calories'];
+                  print(food.data.toString());
+                  print(map['name']);
+                  widList.add(ButtonFood(height:100, child: Row(children: [Text(calories), Text(name)]), mapVar: flavanoids));
+                }
+              return ListView(children: widList);
+
+            }
+
+
+
+
+
+
+          }
+      ),
+    );
+  }
+}
+
+class ButtonFood extends StatelessWidget {
+  final Widget child;
+  final List<dynamic> mapVar;
+  final double height;
+  ButtonFood({this.child, this.mapVar, this.height});
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+
+    );
   }
 }
 
@@ -68,50 +126,46 @@ class Streambuilder extends StatefulWidget {
 class _StreambuilderState extends State<Streambuilder> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [StreamBuilder<QuerySnapshot>(
-          stream: _firestore.collection(collectionName).snapshots(),
-          builder: (context, snapshot){
-            if(!snapshot.hasData){
-              return CircularProgressIndicator();
-            }
-            else{
-              caloriesDayList = [];
-              totalCalories = 0;
-              List<Widget> foodItemList = [];
-              List<Widget> newItems = [];
-              final messages = snapshot.data.docs;
-
-              for (var message in messages) {
-                Map<String, dynamic> data = message.data();
-
-                String calories = data['calories'];
-                String name = data['name'];
-                List nutrients = data['nutrientList'];
-                foodItemList.add(FoodItemWidget(calories, name, nutrients));
-
-              }
-              for (double calorie in caloriesDayList){
-                totalCalories = totalCalories + calorie;
-              }
-              return Expanded(child: ListView(
-                children: foodItemList,
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),),
-              );
-            }
-            /*if (snapshot.hasData ==true){
-        return Center(child: CircularProgressIndicator(),);
-        }
-        else{
-
-
-
-
-        }*/
+    return StreamBuilder<QuerySnapshot>(
+        stream: _stream,
+        builder: (context, snapshot){
+          if(!snapshot.hasData){
+            return CircularProgressIndicator();
           }
-      ),
+          else{
+            caloriesDayList = [];
+            totalCalories = 0;
+            List<Widget> foodItemList = [];
+            List<Widget> newItems = [];
+            final messages = snapshot.data.docs;
 
-    ]
+            for (var message in messages) {
+              Map<String, dynamic> data = message.data();
+
+              String calories = data['calories'];
+              String name = data['name'];
+              List nutrients = data['nutrientList'];
+              foodItemList.add(FoodItemWidget(calories, name, nutrients));
+
+            }
+            for (double calorie in caloriesDayList){
+              totalCalories = totalCalories + calorie;
+            }
+            return Container(child: ListView(
+              children: foodItemList,
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),),
+            );
+          }
+          /*if (snapshot.hasData ==true){
+      return Center(child: CircularProgressIndicator(),);
+      }
+      else{
+
+
+
+
+      }*/
+        }
     );
   }
 }
@@ -170,6 +224,13 @@ class _SearchStatefulState extends State<SearchStateful> {
 
     String searchTerm;
     return Scaffold(
+      appBar: AppBar(
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         child: Padding(
           padding: EdgeInsets.all(20),
