@@ -108,6 +108,7 @@ class ButtonFood extends StatelessWidget {
   ButtonFood({this.child, this.mapVar, this.height});
   @override
   Widget build(BuildContext context) {
+    List<dynamic> map = mapVar;
     return SizedBox(
       height: height,
       child: child,
