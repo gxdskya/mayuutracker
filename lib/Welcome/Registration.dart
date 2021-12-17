@@ -1,6 +1,7 @@
 import 'package:csia/Settings/Settings.dart';
 import 'package:flutter/material.dart';
 
+import '../consts.dart';
 import 'AuthenticationFields.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -35,7 +36,11 @@ class _RegistrationState extends State<Registration> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: myTheme.primaryColor,
+      appBar: AppBar(
+        backgroundColor: myTheme.accentColor,
+        title: Text('Register', style: kTextStyle),
+      ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Center(
@@ -44,54 +49,57 @@ class _RegistrationState extends State<Registration> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
 
-                AuthenticationField(
-                  //reused widget
-                  errorMessage: errorMessage,
-                  onSubmitted: () async{
-                    setState(() {
-                      showSpinner = true;
-                    });
-                    if(password.length<6){
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: AuthenticationField(
+                    //reused widget
+                    errorMessage: errorMessage,
+                    onSubmitted: () async{
                       setState(() {
-                        errorMessage = 'Your password was less than 6 characters. Please try a different password that is at least 6 characters';
+                        showSpinner = true;
                       });
-                      //error message
-                    }
-                    else{
-                      try{
+                      if(password.length<6){
+                        setState(() {
+                          errorMessage = 'Your password was less than 6 characters. Please try a different password that is at least 6 characters';
+                        });
+                        //error message
+                      }
+                      else{
+                        try{
 
-                        final newUser = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-                        if (newUser != null){
+                          final newUser = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+                          if (newUser != null){
+                            setState(() {
+                              showSpinner = false;
+                            });
+                            print(newUser.user.email +' has successfully registered');
+                            Navigator.pushNamed(context, Settings.id);
+                          }
+
+                        }
+                        catch(exception){
+                          print('something happened');
                           setState(() {
                             showSpinner = false;
+                            errorMessage = 'We were unable to register you. Please check your internet connection and try again later.';
                           });
-                          print(newUser.user.email +' has successfully registered');
-                          Navigator.pushNamed(context, Settings.id);
                         }
-
                       }
-                      catch(exception){
-                        print('something happened');
-                        setState(() {
-                          showSpinner = false;
-                          errorMessage = 'We were unable to register you. Please check your internet connection and try again later.';
-                        });
-                      }
-                    }
 
 
 
 
-                },title: 'Register',
-                  controllerEmail: _emailController,
-                  onEmailChange: (value){
-                    email = value;
-                  },
+                  },title: 'Register',
+                    controllerEmail: _emailController,
+                    onEmailChange: (value){
+                      email = value;
+                    },
 
-                  controllerPassword: _passwordController,
-                  onPasswordChange: (value){
-                    password = value;
-                  },
+                    controllerPassword: _passwordController,
+                    onPasswordChange: (value){
+                      password = value;
+                    },
+                  ),
                 )
             ],
           ),

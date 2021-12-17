@@ -1,3 +1,4 @@
+import 'package:csia/consts.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -28,12 +29,19 @@ class _VideoPlayerV3State extends State<VideoPlayerV3> {
   }
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: myTheme.primaryColor,
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: kTextStyle,),
+        backgroundColor: myTheme.accentColor,
       ),
-            body: YoutubePlayerIFrame(//player
-              controller: _controller,
-              aspectRatio: 16/9,
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: YoutubePlayerIFrame(//player
+                  controller: _controller,
+                  aspectRatio: 16/9,
+                ),
+              ),
             ),
     );
   }

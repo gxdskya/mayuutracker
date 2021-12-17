@@ -9,6 +9,7 @@ import 'package:csia/VidPlayer/VidPlayer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:csia/utilities/ErrorPage.dart';
 import 'package:csia/Settings/Settings.dart';
+import 'consts.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget{
 
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: myTheme,
       initialRoute: Welcome.id,
       routes: {
         VidPlayer.vidPlayerID : (context) => VidPlayer(),//navigate to vid player page
